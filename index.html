@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Elektrodinamika Interaktif</title>
+<meta name="description" content="Materi elektrodinamika interaktif: sistem koordinat, elektrostatika, syarat batas, multipol, dielektrik, dan magnetostatika Biot-Savart.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="css/style.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module" src="js/main.js"></script>
+</head>
+<body>
+<div class="layout">
+
+<nav class="toc" aria-label="Daftar isi">
+  <p class="brand">Elektrodinamika Interaktif<small>S2 Fisika · 2026</small></p>
+  <ol>
+    <li><a href="#bab1"><span class="num">1</span>Koordinat &amp; Vektor</a></li>
+    <li class="sub"><a href="#koordinat">Tiga sistem koordinat</a></li>
+    <li class="sub"><a href="#divcurl">Divergensi &amp; curl</a></li>
+    <li class="sub"><a href="#delta">Delta Dirac</a></li>
+    <li><a href="#bab2"><span class="num">2</span>Elektrostatika</a></li>
+    <li class="sub"><a href="#coulomb">Coulomb &amp; medan</a></li>
+    <li class="sub"><a href="#pr">Kalkulator PR</a></li>
+    <li class="sub"><a href="#gauss">Hukum Gauss</a></li>
+    <li class="sub"><a href="#potensial">Potensial &amp; energi</a></li>
+    <li><a href="#bab3"><span class="num">3</span>Syarat Batas</a></li>
+    <li class="sub"><a href="#laplace">Persamaan Laplace</a></li>
+    <li class="sub"><a href="#separasi">Separasi variabel</a></li>
+    <li class="sub"><a href="#bayangan">Metode bayangan</a></li>
+    <li><a href="#bab4"><span class="num">4</span>Multipol &amp; Dielektrik</a></li>
+    <li class="sub"><a href="#dipol">Dipol listrik</a></li>
+    <li class="sub"><a href="#multipol">Ekspansi multipol</a></li>
+    <li class="sub"><a href="#dielektrik">Bahan dielektrik</a></li>
+    <li><a href="#bab5"><span class="num">5</span>Magnetostatika</a></li>
+    <li class="sub"><a href="#biotsavart">Hukum Biot-Savart</a></li>
+    <li class="sub"><a href="#medan3d">Medan 3D</a></li>
+    <li class="sub"><a href="#helmholtz">Helmholtz &amp; solenoida</a></li>
+    <li><a href="#bab6"><span class="num">6</span>Tugas: Dua Loop</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="hero prose">
+  <div class="eyebrow">Elektrostatika → Magnetostatika</div>
+  <h1>Elektrodinamika Interaktif</h1>
+  <p class="lead">Ringkasan materi kuliah, ditemani simulasi yang bisa digeser, di-drag, dan diputar. Baca rumusnya, lalu uji di simulasi. Kotak <b>Coba ini</b> berisi eksperimen terarah.</p>
+  <p class="src">Sumber: slide Prof. Dr. Togar Saragi (bab 1–4) dan Prof. Dr. rer.nat. Ayi Bahtiar (bab 5–6). Simulasi 2D: p5.js. Simulasi 3D: Three.js.</p>
+</header>
+
+<!-- =================================================================== BAB 1 -->
+<section class="chapter" id="bab1">
+  <div class="chap-head prose"><span class="chap-num">BAB 1</span><h2>Sistem Koordinat &amp; Analisis Vektor</h2></div>
+  <div class="prose">
+    <p>Semua soal elektrodinamika dimulai dari memilih koordinat yang sesuai dengan simetri soalnya. Kuncinya ada di <b>koefisien metrik</b> $h_i$: panjang nyata dari perubahan kecil $du_i$ adalah $d\ell_i = h_i\,du_i$.</p>
+
+    <h3 id="koordinat">1.1 Tiga sistem koordinat ortogonal</h3>
+    <div class="tw"><table>
+      <thead><tr><th></th><th>Kartesis $(x,y,z)$</th><th>Silinder $(r,\varphi,z)$</th><th>Bola $(r,\theta,\varphi)$</th></tr></thead>
+      <tbody>
+        <tr><td>$h_1,h_2,h_3$</td><td>$1,1,1$</td><td>$1,\ r,\ 1$</td><td>$1,\ r,\ r\sin\theta$</td></tr>
+        <tr><td>$d\vec\ell$</td><td>$dx\,\hat x+dy\,\hat y+dz\,\hat z$</td><td>$dr\,\hat r+r\,d\varphi\,\hat\varphi+dz\,\hat z$</td><td>$dr\,\hat r+r\,d\theta\,\hat\theta+r\sin\theta\,d\varphi\,\hat\varphi$</td></tr>
+        <tr><td>$dA$ (koordinat ke-$i$ konstan)</td><td>$dy\,dz,\ dx\,dz,\ dx\,dy$</td><td>$r\,d\varphi\,dz,\ dr\,dz,\ r\,dr\,d\varphi$</td><td>$r^2\sin\theta\,d\theta\,d\varphi,\ r\sin\theta\,dr\,d\varphi,\ r\,dr\,d\theta$</td></tr>
+        <tr><td>$dV=h_1h_2h_3\,du_1du_2du_3$</td><td>$dx\,dy\,dz$</td><td>$r\,dr\,d\varphi\,dz$</td><td>$r^2\sin\theta\,dr\,d\theta\,d\varphi$</td></tr>
+      </tbody>
+    </table></div>
+    <div class="box key"><span class="label">Jacobian</span>
+      $dV$ juga didapat dari determinan Jacobi. Untuk bola, $x=r\sin\theta\cos\varphi,\ y=r\sin\theta\sin\varphi,\ z=r\cos\theta$:
+      $$J=\det\begin{pmatrix}\sin\theta\cos\varphi & r\cos\theta\cos\varphi & -r\sin\theta\sin\varphi\\ \sin\theta\sin\varphi & r\cos\theta\sin\varphi & r\sin\theta\cos\varphi\\ \cos\theta & -r\sin\theta & 0\end{pmatrix}=r^2\sin\theta$$
+    </div>
+  </div>
+
+  <div class="sim" data-sim="koordinat3d" id="sim-koordinat">
+    <div class="sim-head"><span class="sim-tag">Simulasi 1.1</span><h4>Titik, vektor satuan, dan elemen volume</h4><span class="lib">three.js</span></div>
+    <div class="sim-body"><div class="stage"><div class="loading">memuat…</div><div class="hint">drag = putar · scroll = zoom</div></div><div class="controls"></div></div>
+    <div class="readout"></div>
+    <details class="try"><summary>Coba ini</summary><ol>
+      <li>Pilih <b>Bola</b>, geser $\theta$ ke dekat 0. Lihat sisi $r\sin\theta\,d\varphi$ menyusut: itu sebabnya ada $\sin\theta$ di $dV$.</li>
+      <li>Perbesar $r$ dua kali. Volume elemen bola naik empat kali ($\propto r^2$), silinder dua kali ($\propto r$).</li>
+      <li>Perhatikan vektor satuan $\hat r,\hat\theta,\hat\varphi$ berubah arah ketika titik bergeser. Vektor satuan kartesis selalu tetap.</li>
+    </ol></details>
+  </div>
+
+  <div class="prose">
+    <h3 id="divcurl">1.2 Divergensi, curl, dan dua teorema besar</h3>
+    <p><b>Divergensi</b> = fluks keluar per satuan volume. <b>Curl</b> = sirkulasi per satuan luas.</p>
+    $$\nabla\cdot\vec F=\lim_{\Delta V\to0}\frac{1}{\Delta V}\oint\vec F\cdot d\vec A,\qquad (\nabla\times\vec F)\cdot\hat n=\lim_{\Delta A\to0}\frac{1}{\Delta A}\oint\vec F\cdot d\vec\ell$$
+    <div class="box key"><span class="label">Teorema</span>
+      $$\underbrace{\int_V\nabla\cdot\vec F\,dV=\oint_A\vec F\cdot d\vec A}_{\text{Divergensi → Hukum Gauss}}\qquad \underbrace{\oint_C\vec F\cdot d\vec\ell=\int_A(\nabla\times\vec F)\cdot\hat n\,dA}_{\text{Stokes → Hukum Ampere}}$$
+    </div>
+    <p>Dalam koordinat umum:</p>
+    $$\nabla\cdot\vec V=\frac{1}{h_1h_2h_3}\left[\partial_{u_1}(h_2h_3V_1)+\partial_{u_2}(h_1h_3V_2)+\partial_{u_3}(h_1h_2V_3)\right]$$
+  </div>
+
+  <div class="sim" data-sim="divcurl">
+    <div class="sim-head"><span class="sim-tag">Simulasi 1.2</span><h4>Fluks dan sirkulasi pada kotak kecil</h4><span class="lib">p5.js</span></div>
+    <div class="sim-body"><div class="stage"><div class="loading">memuat…</div><div class="hint">drag kotak untuk memindahkan</div></div><div class="controls"></div></div>
+    <div class="readout"></div>
+    <details class="try"><summary>Coba ini</summary><ol>
+      <li>Medan <b>sumber $\vec r$</b>: fluks/luas selalu ≈ 2 di mana pun kotaknya (2D: $\nabla\cdot\vec r=2$), sirkulasinya 0.</li>
+      <li>Medan <b>rotasi</b>: kebalikannya, divergensi 0 dan curl = 2.</li>
+      <li>Medan <b>titik 2D $\hat r/r$</b> (versi 2D dari $\hat r/r^2$): di luar pusat fluks bersihnya 0. Begitu kotak melingkupi pusat, fluks langsung $2\pi$ berapa pun ukurannya. Ini versi 2D dari $\nabla\cdot(\hat r/r^2)=4\pi\delta^3(\vec r)$.</li>
+      <li>Medan <b>vorteks</b> $\hat\varphi/r$: curl 0 di mana-mana kecuali di pusat, tetapi sirkulasi di sekitar pusat $2\pi$. Ini analog medan $\vec B$ kawat lurus.</li>
+    </ol></details>
+  </div>
+
+  <div class="prose">
+    <h3 id="delta">1.3 Fungsi delta Dirac</h3>
+    <p>$\delta(x)=0$ untuk $x\ne0$, tetapi $\int\delta(x)\,dx=1$. Sifat penyaringnya: $\int f(x)\,\delta(x-a)\,dx=f(a)$. Di 3D, $\delta^3(\vec r)=\delta(x)\delta(y)\delta(z)$.</p>
+    $$\nabla\cdot\frac{\hat r}{r^2}=4\pi\,\delta^3(\vec r),\qquad \nabla^2\frac1r=-4\pi\,\delta^3(\vec r),\qquad \nabla\frac1r=-\frac{\hat r}{r^2}$$
+    <details class="check"><summary>Cek pemahaman: hitung $J=\int_V(r^2+2)\,\nabla\cdot\dfrac{\hat r}{r^2}\,d\tau$ (bola berpusat di asal)</summary>
+      <p><b>Cara 1 (delta):</b> $J=\int(r^2+2)\,4\pi\delta^3(\vec r)\,d\tau=4\pi f(0)=4\pi\cdot2=8\pi$.</p>
+      <p><b>Cara 2 (integral parsial):</b> $J=-\int\frac{\hat r}{r^2}\cdot\nabla(r^2+2)\,d\tau+\oint(r^2+2)\frac{\hat r}{r^2}\cdot d\vec a$. Suku pertama: $-\int_0^R\frac{2r}{r^2}4\pi r^2dr=-4\pi R^2$. Suku kedua: $(R^2+2)\cdot4\pi$. Jumlah $=8\pi$ ✓.</p>
+    </details>
+  </div>
+</section>
+
+<!-- =================================================================== BAB 2 -->
+<section class="chapter" id="bab2">
+  <div class="chap-head prose"><span class="chap-num">BAB 2</span><h2>Elektrostatika: Coulomb, Gauss, Potensial</h2></div>
+  <div class="prose">
+    <h3 id="coulomb">2.1 Hukum Coulomb &amp; superposisi</h3>
+    $$\vec F_{12}=\frac{q_1q_2}{4\pi\varepsilon_0}\frac{\vec r_1-\vec r_2}{|\vec r_1-\vec r_2|^3},\qquad \vec E(\vec r)=\frac{1}{4\pi\varepsilon_0}\sum_i q_i\frac{\vec r-\vec r_i}{|\vec r-\vec r_i|^3},\qquad \vec F=q\vec E$$
+    <p>Gaya sejenis tolak-menolak dan berlainan tarik-menarik, selalu sepanjang garis penghubung kedua muatan. Gaya total = jumlah <b>vektor</b> dari tiap pasangan (superposisi). $k=1/4\pi\varepsilon_0=8{,}99\times10^9\ \mathrm{N\,m^2/C^2}$.</p>
+  </div>
+
+  <div class="sim" data-sim="coulomb" id="sim-coulomb">
+    <div class="sim-head"><span class="sim-tag">Simulasi 2.1</span><h4>Laboratorium muatan titik</h4><span class="lib">p5.js</span></div>
+    <div class="sim-body"><div class="stage"><div class="loading">memuat…</div><div class="hint">drag muatan · klik dobel = hapus · kursor = probe</div></div><div class="controls"></div></div>
+    <div class="readout"></div>
+    <details class="try"><summary>Coba ini</summary><ol>
+      <li>Preset <b>Dipol</b>: garis medan keluar dari + dan masuk ke −. Ekuipotensial selalu tegak lurus garis medan.</li>
+      <li>Preset <b>Dua sejenis</b>: cari titik netral $\vec E=0$ di tengah (probe menunjukkan |E| ≈ 0).</li>
+      <li>Nyalakan <b>vektor gaya</b>. Panah tiap muatan adalah jumlah vektor gaya dari semua muatan lain (superposisi).</li>
+      <li>Lihat <b>energi sistem</b> $W=\tfrac12\sum_i q_iV_i$. Dekatkan dua muatan berlawanan, W makin negatif.</li>
+    </ol></details>
+  </div>
+
+  <div class="prose">
+    <h3 id="pr">2.2 Kalkulator superposisi (PR slide 8)</h3>
+    <p>Gaya pada muatan target dihitung langkah demi langkah: vektor $\vec r_{ij}$, jaraknya, tiap $\vec F_{ij}$, lalu jumlahnya. Tiga soal PR dan contoh slide 7 sudah terisi. Pilih soal, atau ubah sendiri nilainya.</p>
+  </div>
+  <div class="sim calc" data-sim="superposisi" id="sim-pr">
+    <div class="sim-head"><span class="sim-tag">Kalkulator 2.2</span><h4>Gaya Coulomb 3D, langkah per langkah</h4><span class="lib">JS</span></div>
+    <div class="wrap"></div>
+  </div>
+
+  <div class="prose">
+    <h3 id="gauss">2.3 Hukum Gauss</h3>
+    <p>Elemen luas $dA$ dilihat dari muatan $q$ membentuk sudut ruang $d\Omega=\dfrac{\hat r\cdot\hat n}{r^2}dA$. Total sudut ruang permukaan tertutup adalah $4\pi$ jika $q$ di dalam, dan 0 jika di luar. Jadi:</p>
+    $$\Phi_E=\oint_S\vec E\cdot d\vec A=\frac{q_\text{enc}}{\varepsilon_0}\quad\xrightarrow{\text{teorema divergensi}}\quad\nabla\cdot\vec E=\frac{\rho}{\varepsilon_0}$$
+  </div>
+  <div class="sim" data-sim="gauss">
+    <div class="sim-head"><span class="sim-tag">Simulasi 2.3</span><h4>Menghitung garis medan yang menembus permukaan Gauss</h4><span class="lib">p5.js</span></div>
+    <div class="sim-body"><div class="stage"><div class="loading">memuat…</div><div class="hint">drag pusat/tepi lingkaran · drag muatan</div></div><div class="controls"></div></div>
+    <div class="readout"></div>
+    <details class="try"><summary>Coba ini</summary><ol>
+      <li>Tiap muatan memancarkan garis sebanding $|q|$. Hitung garis keluar dikurangi garis masuk: hasilnya selalu sebanding $q_\text{enc}$.</li>
+      <li>Ubah bentuk atau ukuran permukaan. Fluks tidak berubah selama muatan di dalamnya sama.</li>
+      <li>Muatan di luar permukaan: setiap garisnya masuk lalu keluar lagi, sehingga kontribusinya 0.</li>
+    </ol></details>
+  </div>
+
+  <div class="prose">
+    <h3 id="potensial">2.4 Potensial &amp; energi listrik</h3>
+    <p>Karena $\nabla\times\vec E=0$, medan listrik bisa ditulis sebagai gradien skalar: $\vec E=-\nabla V$.</p>
+    $$V(\vec r)=\frac{1}{4\pi\varepsilon_0}\sum_i\frac{q_i}{|\vec r-\vec r_i|},\qquad V_B-V_A=-\int_A^B\vec E\cdot d\vec\ell,\qquad W=\frac{\varepsilon_0}{2}\int E^2\,d\tau=\frac12\int\vec D\cdot\vec E\,d\tau$$
+    <p>Kapasitor: $W=\int_0^Q\frac{q}{C}dq=\frac{Q^2}{2C}=\frac12CV^2$.</p>
+    <div class="box key"><span class="label">Persamaan Maxwell statik</span>
+      <div class="tw"><table>
+        <thead><tr><th>Diferensial</th><th>Integral</th><th>Arti</th></tr></thead>
+        <tbody>
+          <tr><td>$\nabla\cdot\vec E=\rho/\varepsilon_0$</td><td>$\oint\vec E\cdot d\vec S=Q_\text{enc}/\varepsilon_0$</td><td>Muatan adalah sumber $\vec E$ (Gauss)</td></tr>
+          <tr><td>$\nabla\times\vec E=0$</td><td>$\oint\vec E\cdot d\vec\ell=0$</td><td>$\vec E$ konservatif</td></tr>
+          <tr><td>$\nabla\cdot\vec B=0$</td><td>$\oint\vec B\cdot d\vec S=0$</td><td>Tidak ada monopol magnet</td></tr>
+          <tr><td>$\nabla\times\vec B=\mu_0\vec J$</td><td>$\oint\vec B\cdot d\vec\ell=\mu_0I_\text{enc}$</td><td>Arus adalah sumber sirkulasi $\vec B$ (Ampere)</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================== BAB 3 -->
+<section class="chapter" id="bab3">
+  <div class="chap-head prose"><span class="chap-num">BAB 3</span><h2>Persoalan Syarat Batas</h2></div>
+  <div class="prose">
+    <h3 id="laplace">3.1 Persamaan Laplace $\nabla^2V=0$</h3>
+    <p>Di daerah tanpa muatan, potensial memenuhi $\nabla^2V=0$. Dua sifat pentingnya:</p>
+    <ol>
+      <li><b>Sifat rata-rata.</b> $V$ di suatu titik sama dengan rata-rata $V$ di lingkaran (2D) atau bola (3D) di sekitarnya: $V(\vec r)=\frac{1}{4\pi R^2}\oint V\,da$.</li>
+      <li><b>Tanpa ekstrem lokal.</b> Maksimum dan minimum hanya terjadi di batas.</li>
+    </ol>
+    <p><b>Teorema keunikan:</b> jika $V$ diketahui di seluruh permukaan batas, solusinya tunggal. Akibatnya, cara apa pun yang menghasilkan solusi yang memenuhi syarat batas pasti benar, termasuk tebakan dan metode bayangan.</p>
+  </div>
+  <div class="sim" data-sim="relaksasi">
+    <div class="sim-head"><span class="sim-tag">Simulasi 3.1</span><h4>Metode relaksasi: Laplace = rata-rata tetangga</h4><span class="lib">p5.js</span></div>
+    <div class="sim-body"><div class="stage"><div class="loading">memuat…</div><div class="hint">klik/drag = lukis konduktor</div></div><div class="controls"></div></div>
+    <div class="readout"></div>
+    <details class="try"><summary>Coba ini</summary><ol>
+      <li>Jalankan iterasi. Tiap sel diganti rata-rata 4 tetangganya, versi diskret dari sifat rata-rata.</li>
+      <li>Lukis konduktor +1 dan −1 sembarang. Setelah konvergen, tidak ada maksimum di luar konduktor.</li>
+      <li>Preset <b>Celah pelat</b> sama dengan soal 3.2. Bandingkan dengan solusi deret Fourier di bawah.</li>
+    </ol></details>
+  </div>
+
+  <div class="prose">
+    <h3 id="separasi">3.2 Separasi variabel: celah dua pelat</h3>
+    <p>Dua pelat ground di $y=0$ dan $y=a$, ujung kiri $x=0$ dijaga pada $V_0$. Syarat batas: $V(x,0)=V(x,a)=0$, $V\to0$ untuk $x\to\infty$, $V(0,y)=V_0$.</p>
+    <ol class="steps">
+      <li>Asumsi $V=X(x)Y(y)$ → $\frac{1}{X}X''+\frac1YY''=0$ → $X''=k^2X$, $Y''=-k^2Y$.</li>
+      <li>Solusi: $X=Ae^{kx}+Be^{-kx}$, $Y=C\sin ky+D\cos ky$.</li>
+      <li>$V\to0$ di $x\to\infty$ → $A=0$. $V=0$ di $y=0$ → $D=0$. $V=0$ di $y=a$ → $\sin ka=0$ → $k=n\pi/a$.</li>
+      <li>Superposisi: $V=\sum_n C_ne^{-n\pi x/a}\sin\frac{n\pi y}{a}$.</li>
+      <li>Ortogonalitas sinus di $x=0$: $C_n=\frac2a\int_0^aV_0\sin\frac{n\pi y}{a}dy=\frac{2V_0}{n\pi}(1-\cos n\pi)$, yaitu $\frac{4V_0}{n\pi}$ untuk $n$ ganjil dan 0 untuk $n$ genap.</li>
+    </ol>
+    $$\boxed{V(x,y)=\frac{4V_0}{\pi}\sum_{n=1,3,5,\dots}\frac1n\,e^{-n\pi x/a}\sin\frac{n\pi y}{a}}$$
+  </div>
+  <div class="sim" data-sim="fourier">
+    <div class="sim-head"><span class="sim-tag">Simulasi 3.2</span><h4>Deret Fourier sinus suku demi suku</h4><span class="lib">p5.js</span></div>
+    <div class="sim-body"><div class="stage"><div class="loading">memuat…</div></div><div class="controls"></div></div>
+    <div class="readout"></div>
+    <details class="try"><summary>Coba ini</summary><ol>
+      <li>Mulai dari 1 suku, lalu naikkan. Profil $V(0,y)$ makin mendekati kotak $V_0$.</li>
+      <li>Di dekat $y=0$ dan $y=a$ muncul <b>overshoot ~9%</b> yang tidak hilang walau suku ditambah. Itu fenomena Gibbs.</li>
+      <li>Geser $x$ ke kanan. Suku orde tinggi meluruh paling cepat ($e^{-n\pi x/a}$), sehingga cukup 1 suku untuk $x\gtrsim a$.</li>
+    </ol></details>
+  </div>
+  <div class="prose">
+    <p><b>Pipa persegi</b> (sisi $a$, $b$, ujung $x=0$ pada $V_0$): separasi 3 variabel menghasilkan</p>
+    $$V=\frac{16V_0}{\pi^2}\sum_{n,m\ \text{ganjil}}\frac{1}{nm}\,e^{-\pi\sqrt{(n/a)^2+(m/b)^2}\,x}\sin\frac{n\pi y}{a}\sin\frac{m\pi z}{b}$$
+    <p><b>Koordinat bola, simetri azimut:</b> $V(r,\theta)=\sum_l\left(A_lr^l+\dfrac{B_l}{r^{l+1}}\right)P_l(\cos\theta)$, dengan $P_l$ polinomial Legendre (rumus Rodrigues $P_l(x)=\frac{1}{2^ll!}\frac{d^l}{dx^l}(x^2-1)^l$).</p>
+
+    <h3 id="bayangan">3.3 Metode bayangan</h3>
+    <p>Muatan $q$ di $(0,0,d)$ di atas bidang konduktor ground. Ganti konduktor dengan muatan bayangan $-q$ di $(0,0,-d)$. Syarat $V=0$ di $z=0$ terpenuhi, jadi menurut teorema keunikan ini solusinya di $z&gt;0$.</p>
+    $$V=\frac{q}{4\pi\varepsilon_0}\left[\frac{1}{\sqrt{x^2+y^2+(z-d)^2}}-\frac{1}{\sqrt{x^2+y^2+(z+d)^2}}\right],\qquad \sigma=-\varepsilon_0\frac{\partial V}{\partial z}\Big|_{z=0}=\frac{-qd}{2\pi(x^2+y^2+d^2)^{3/2}}$$
+    <p>Total muatan induksi: $\int\sigma\,da=-q$. Gaya: $\vec F=-\dfrac{q^2}{4\pi\varepsilon_0(2d)^2}\hat z$. Energi: $W=-\dfrac{q^2}{4\pi\varepsilon_0\,4d}$, <b>setengah</b> energi dua muatan titik, karena medan hanya ada di separuh ruang.</p>
+    <p><b>Bola ground</b> (jari-jari $R$, muatan $q$ berjarak $a$ dari pusat): bayangannya $q'=-\dfrac{R}{a}q$ di jarak $b=\dfrac{R^2}{a}$ dari pusat.</p>
+  </div>
+  <div class="sim" data-sim="bayangan">
+    <div class="sim-head"><span class="sim-tag">Simulasi 3.3</span><h4>Muatan bayangan: bidang dan bola</h4><span class="lib">p5.js</span></div>
+    <div class="sim-body"><div class="stage"><div class="loading">memuat…</div><div class="hint">drag muatan q</div></div><div class="controls"></div></div>
+    <div class="readout"></div>
+    <details class="try"><summary>Coba ini</summary><ol>
+      <li>Nyalakan <b>tampilkan bayangan</b>. Garis medan di area nyata persis sama dengan pasangan $q$ dan $-q$.</li>
+      <li>Grafik $\sigma(x)$: dekatkan $q$ ke bidang, maka puncak σ makin tajam, tetapi luasnya tetap $-q$.</li>
+      <li>Mode <b>bola</b>: geser $q$ menjauh. Bayangan mengecil ($|q'|=qR/a$) dan bergerak ke pusat ($b=R^2/a$).</li>
+    </ol></details>
+  </div>
+</section>
+
+<!-- =================================================================== BAB 4 -->
+<section class="chapter" id="bab4">
+  <div class="chap-head prose"><span class="chap-num">BAB 4</span><h2>Ekspansi Multipol &amp; Bahan Dielektrik</h2></div>
+  <div class="prose">
+    <h3 id="dipol">4.1 Dipol listrik</h3>
+    <p>Muatan $+q$ di $(0,a)$ dan $-q$ di $(0,-a)$ memberi momen dipol $\vec p=2qa\,\hat y$. Secara umum $\vec p=\sum q_i\vec r_i=\int\vec r\rho\,d\tau$. Untuk $r\gg a$, ekspansi binomial $(1+x)^{-1/2}\approx1-\tfrac12x$ menghasilkan</p>
+    $$V=\frac{\vec p\cdot\hat r}{4\pi\varepsilon_0r^2},\qquad \vec E=-\nabla V=\frac{p}{4\pi\varepsilon_0r^3}\left(2\cos\theta\,\hat r+\sin\theta\,\hat\theta\right),\qquad |\vec E|=\frac{p}{4\pi\varepsilon_0r^3}\sqrt{3\cos^2\theta+1}$$
+    <p><b>Dipol dalam medan $\vec E$:</b> torka $\vec\tau=\vec p\times\vec E$ dan energi $U=-\vec p\cdot\vec E=-pE\cos\theta$. Posisi $\vec p\parallel\vec E$ adalah kesetimbangan <b>stabil</b> ($U_\text{min}=-pE$). Posisi antiparalel <b>tak stabil</b> ($U_\text{max}=+pE$). Jika $\vec E$ tak homogen, muncul juga gaya total $\vec F=(\vec p\cdot\nabla)\vec E$.</p>
+  </div>
+  <div class="sim" data-sim="dipol">
+    <div class="sim-head"><span class="sim-tag">Simulasi 4.1</span><h4>Dipol berputar dalam medan homogen</h4><span class="lib">p5.js</span></div>
+    <div class="sim-body"><div class="stage"><div class="loading">memuat…</div><div class="hint">drag ujung dipol untuk memutar, lalu lepas</div></div><div class="controls"></div></div>
+    <div class="readout"></div>
+    <details class="try"><summary>Coba ini</summary><ol>
+      <li>Putar dipol ke 90° lalu lepaskan. Dipol berosilasi di sekitar θ = 0, yaitu titik minimum kurva $U(\theta)$.</li>
+      <li>Tempatkan tepat di 180° dengan redaman. Dipol diam (τ = 0), tetapi sedikit gangguan membuatnya berbalik. Ini tak stabil, sama seperti loop-2 di Tugas (bab 6).</li>
+      <li>Usaha medan $W=pE(\cos\theta-\cos\theta_0)$ terbaca di panel.</li>
+    </ol></details>
+  </div>
+
+  <div class="prose">
+    <h3 id="multipol">4.2 Ekspansi multipol</h3>
+    <p>Untuk titik jauh ($r\gg a$), $\dfrac{1}{|\vec r-\vec r^{\prime}|}=\dfrac1r\sum_n\left(\dfrac{r'}{r}\right)^nP_n(\cos\alpha)$, sehingga</p>
+    $$V(\vec r)=\frac{1}{4\pi\varepsilon_0}\Bigg[\underbrace{\frac1r\int\rho\,d\tau}_{\text{monopol}}+\underbrace{\frac{1}{r^2}\int r'\cos\alpha\,\rho\,d\tau}_{\text{dipol}}+\underbrace{\frac{1}{r^3}\int r'^2\Big(\tfrac32\cos^2\alpha-\tfrac12\Big)\rho\,d\tau}_{\text{kuadrupol}}+\cdots\Bigg]$$
+    <p>Suku pertama yang tidak nol mendominasi pada jarak jauh. Netral → dipol ($1/r^2$). Netral dan $p=0$ → kuadrupol ($1/r^3$).</p>
+  </div>
+  <div class="sim" data-sim="multipol">
+    <div class="sim-head"><span class="sim-tag">Simulasi 4.2</span><h4>Potensial eksak vs pendekatan multipol</h4><span class="lib">p5.js</span></div>
+    <div class="sim-body"><div class="stage"><div class="loading">memuat…</div></div><div class="controls"></div></div>
+    <div class="readout"></div>
+    <details class="try"><summary>Coba ini</summary><ol>
+      <li>Preset <b>dipol</b>: suku monopol = 0, dan pendekatan orde 1 sudah sangat dekat untuk $r&gt;3a$.</li>
+      <li>Preset <b>kuadrupol linear</b> (+q, −2q, +q): monopol dan dipol nol, yang tersisa suku $P_2(\cos\theta)/r^3$.</li>
+      <li>Geser $r$ mendekati $a$. Deret konvergen makin lambat, perlu banyak suku.</li>
+    </ol></details>
+  </div>
+
+  <div class="prose">
+    <h3 id="dielektrik">4.3 Bahan dielektrik</h3>
+    <p>Dalam medan $\vec E$, molekul dielektrik terpolarisasi. Molekul nonpolar mendapat dipol induksi, sedangkan molekul polar diputar oleh torka. <b>Polarisasi</b> $\vec P$ = momen dipol per satuan volume. Muatan terikatnya $\rho_b=-\nabla\cdot\vec P$ dan $\sigma_b=\vec P\cdot\hat n$.</p>
+    $$\vec D\equiv\varepsilon_0\vec E+\vec P,\quad \nabla\cdot\vec D=\rho_f;\qquad \text{linear: }\vec P=\varepsilon_0\chi_e\vec E,\ \vec D=\varepsilon\vec E,\ \varepsilon_r=1+\chi_e=K$$
+    <p>Muatan titik dalam dielektrik: $\vec E=\dfrac{q}{4\pi\varepsilon_0Kr^2}\hat r$, lebih lemah $K$ kali. Ini terjadi karena muatan polarisasi $Q_P=-\dfrac{K-1}{K}q$ yang menyelimuti $q$.</p>
+    <div class="box key"><span class="label">Syarat batas dua dielektrik ($\sigma_f=0$)</span>
+      $$E_{1t}=E_{2t},\qquad D_{1n}=D_{2n}\ (\varepsilon_1E_{1n}=\varepsilon_2E_{2n})\quad\Rightarrow\quad\frac{\tan\theta_2}{\tan\theta_1}=\frac{\varepsilon_2}{\varepsilon_1}$$
+      Jika ada muatan bebas permukaan: $\hat n_2\cdot(\vec D_2-\vec D_1)=\sigma_f$. Di permukaan konduktor: $E_t=0$, $E_n=\sigma/\varepsilon_0$.
+    </div>
+  </div>
+  <div class="sim" data-sim="dielektrik">
+    <div class="sim-head"><span class="sim-tag">Simulasi 4.3</span><h4>"Pembiasan" garis medan di batas dielektrik</h4><span class="lib">p5.js</span></div>
+    <div class="sim-body"><div class="stage"><div class="loading">memuat…</div></div><div class="controls"></div></div>
+    <div class="readout"></div>
+    <details class="try"><summary>Coba ini</summary><ol>
+      <li>Set $\varepsilon_2&gt;\varepsilon_1$: garis medan menjauhi normal di medium 2, dan $|\vec E_2|$ mengecil.</li>
+      <li>Panel menunjukkan $E_t$ dan $D_n$ sama di kedua sisi, sedangkan $E_n$ dan $D_t$ melompat.</li>
+      <li>Nyalakan muatan terikat $\sigma_b$ untuk melihat sumber lompatan $E_n$.</li>
+    </ol></details>
+  </div>
+</section>
+
+<!-- =================================================================== BAB 5 -->
+<section class="chapter" id="bab5">
+  <div class="chap-head prose"><span class="chap-num">BAB 5</span><h2>Magnetostatika: Hukum Biot-Savart</h2></div>
+  <div class="prose">
+    <div class="tw"><table>
+      <thead><tr><th></th><th>Listrik statik</th><th>Magnet statik</th></tr></thead>
+      <tbody>
+        <tr><td>Sumber</td><td>muatan $q$ (+ dan −)</td><td>arus tunak $I$ (muatan bergerak)</td></tr>
+        <tr><td>Hukum gaya</td><td>Coulomb</td><td>Ampere (dua sirkuit berarus)</td></tr>
+        <tr><td>Medan</td><td>$\vec E\propto1/r^2$, memancar</td><td>$\vec B\propto1/r^2$, melingkar</td></tr>
+        <tr><td>Kutub</td><td>monopol ada</td><td>selalu dipol: $\nabla\cdot\vec B=0$</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 id="biotsavart">5.1 Dari gaya Ampere ke Biot-Savart</h3>
+    <p>Gaya sirkuit-2 pada sirkuit-1 (Hukum Ampere):</p>
+    $$\vec F_{12}=\frac{\mu_0}{4\pi}I_1I_2\oint\!\!\oint\frac{d\vec\ell_1\times\big(d\vec\ell_2\times(\vec r_1-\vec r_2)\big)}{|\vec r_1-\vec r_2|^3}=I_1\oint d\vec\ell_1\times\vec B_2(\vec r_1)$$
+    <p>Dengan dalil Stokes dapat dibuktikan $\vec F_{12}=-\vec F_{21}$ (aksi-reaksi). Bagian yang hanya bergantung pada sirkuit-2 adalah induksi magnetnya:</p>
+    <div class="box key"><span class="label">Hukum Biot-Savart</span>
+      $$\vec B(\vec r)=\frac{\mu_0I}{4\pi}\oint\frac{d\vec\ell'\times(\vec r-\vec r^{\prime})}{|\vec r-\vec r^{\prime}|^3}=\frac{\mu_0}{4\pi}\int\frac{\vec J(\vec r^{\prime})\times(\vec r-\vec r^{\prime})}{|\vec r-\vec r^{\prime}|^3}d\tau',\qquad \mu_0=4\pi\times10^{-7}\ \mathrm{N/A^2}$$
+      Karena $\vec B=\nabla\times\vec A$ dengan $\vec A=\frac{\mu_0}{4\pi}\int\frac{\vec J}{|\vec r-\vec r'|}d\tau'$, otomatis $\nabla\cdot\vec B=0$. Secara umum juga $\nabla\times\vec B=\mu_0\vec J$.
+    </div>
+    <p><b>Contoh 1: kawat lurus tak hingga.</b> Ambil elemen $dx$ pada jarak $a$. Substitusi $x=a\cot\theta$ memberi $dB=\frac{\mu_0I}{4\pi a}\sin\theta\,d\theta$, sehingga $B=\frac{\mu_0I}{4\pi a}\int_0^\pi\sin\theta\,d\theta=\boxed{\dfrac{\mu_0I}{2\pi a}}$.</p>
+  </div>
+  <div class="sim" data-sim="bsintegral">
+    <div class="sim-head"><span class="sim-tag">Simulasi 5.1</span><h4>Menjumlahkan $d\vec B$ dari tiap elemen kawat</h4><span class="lib">p5.js</span></div>
+    <div class="sim-body"><div class="stage"><div class="loading">memuat…</div><div class="hint">drag titik P</div></div><div class="controls"></div></div>
+    <div class="readout"></div>
+    <details class="try"><summary>Coba ini</summary><ol>
+      <li>Tekan <b>Integrasi</b>. Elemen $dx$ ditambahkan satu per satu. Kontribusi terbesar datang dari elemen terdekat ($\theta\approx90°$).</li>
+      <li>Batasi panjang kawat. Hasilnya $B=\frac{\mu_0I}{4\pi a}(\cos\theta_1-\cos\theta_2)$, dan mendekati $\mu_0I/2\pi a$ saat kawat panjang.</li>
+      <li>Geser P menjauh. $B\propto1/a$.</li>
+    </ol></details>
+  </div>
+
+  <div class="prose">
+    <p><b>Contoh 2: loop melingkar</b> (jari-jari $R$, N lilitan) di sumbu-z. Komponen horizontal saling meniadakan, tinggal komponen z:</p>
+    $$B_z(z)=\frac{\mu_0NIR^2}{2(R^2+z^2)^{3/2}},\qquad B_\text{pusat}=\frac{\mu_0NI}{2R}$$
+    <h3 id="medan3d">5.2 Medan 3D dari konfigurasi arus</h3>
+    <p>Simulasi ini menghitung $\vec B$ dengan menjumlahkan Biot-Savart dari ratusan ruas lurus kecil. Ini sama dengan integral di atas, tapi numerik.</p>
+  </div>
+  <div class="sim" data-sim="biot3d" id="sim-biot3d">
+    <div class="sim-head"><span class="sim-tag">Simulasi 5.2</span><h4>Garis medan B: kawat, loop, Helmholtz, solenoida</h4><span class="lib">three.js</span></div>
+    <div class="sim-body"><div class="stage"><div class="loading">memuat…</div><div class="hint">drag = putar · scroll = zoom</div></div><div class="controls"></div></div>
+    <div class="readout"></div>
+    <details class="try"><summary>Coba ini</summary><ol>
+      <li><b>Kawat lurus</b>: garis medan berbentuk lingkaran konsentris (aturan tangan kanan).</li>
+      <li><b>Loop</b>: dari jauh pola medannya sama dengan dipol listrik di simulasi 4.1. Ini dipol magnet $\vec m=I\pi R^2\hat z$.</li>
+      <li><b>Solenoida</b>: medan di dalam hampir seragam dan di luar lemah. Naikkan jumlah lilitan untuk melihatnya makin ideal.</li>
+      <li>Semua garis medan tertutup, tanpa awal dan akhir: $\nabla\cdot\vec B=0$.</li>
+    </ol></details>
+  </div>
+
+  <div class="prose">
+    <h3 id="helmholtz">5.3 Kumparan Helmholtz &amp; solenoida</h3>
+    <p><b>Helmholtz:</b> dua loop sesumbu ($N$ lilitan, arus searah) berjarak $2b$. Di tengah, $dB_z/dz=0$ selalu berlaku karena simetri. Agar medan paling seragam, turunan kedua juga harus nol:</p>
+    $$\frac{d^2B_z}{dz^2}\Big|_{z=b}\propto R^2-4b^2=0\ \Rightarrow\ 2b=R,\qquad B_\text{tengah}=\left(\frac45\right)^{3/2}\frac{\mu_0NI}{R}\approx0{,}716\,\frac{\mu_0NI}{R}$$
+    <p>Kumparan ini dipakai di eksperimen $e/m$ elektron: lintasan elektron melingkar dalam medan yang seragam.</p>
+    <p><b>Solenoida</b> (N lilitan, panjang $L$, jari-jari $R$): bagi menjadi irisan $dz$ berisi $N\,dz/L$ lilitan, lalu jumlahkan rumus loop:</p>
+    $$B(z_0)=\frac{\mu_0NI}{2L}\left[\frac{L-z_0}{\sqrt{(L-z_0)^2+R^2}}+\frac{z_0}{\sqrt{z_0^2+R^2}}\right]=\frac{\mu_0NI}{2L}(\cos\alpha_1+\cos\alpha_2)\ \xrightarrow{L\gg R}\ \mu_0nI$$
+  </div>
+  <div class="sim" data-sim="aksial">
+    <div class="sim-head"><span class="sim-tag">Simulasi 5.3</span><h4>Profil $B_z$ pada sumbu</h4><span class="lib">p5.js</span></div>
+    <div class="sim-body"><div class="stage"><div class="loading">memuat…</div></div><div class="controls"></div></div>
+    <div class="readout"></div>
+    <details class="try"><summary>Coba ini</summary><ol>
+      <li>Helmholtz: geser jarak $2b$ melewati $R$. Untuk $2b&lt;R$ puncak tunggal, untuk $2b&gt;R$ ada lembah di tengah, dan tepat $2b=R$ paling datar.</li>
+      <li>Solenoida: perbesar $L/R$. Kurva mendekati garis datar $\mu_0nI$, dan di ujung $B$ turun ke ±½ nilainya.</li>
+    </ol></details>
+  </div>
+</section>
+
+<!-- =================================================================== BAB 6 -->
+<section class="chapter" id="bab6">
+  <div class="chap-head prose"><span class="chap-num">BAB 6</span><h2>Tugas: Dua Loop Kecil Sebidang</h2></div>
+  <div class="prose">
+    <div class="box"><span class="label">Soal</span>
+      Dua loop berjari-jari $a$ dan $b$ diletakkan sebidang dengan arus searah $I_1$ dan $I_2$. Pusat keduanya berjarak $r\gg a,b$. Tentukan (a) $\vec B$ di kawat-2 oleh kawat-1, (b) fluks melalui kawat-2, (c) torsi di kawat-2, dan (d) induktansi silang $M$.
+    </div>
+  </div>
+  <div class="sim" data-sim="tugas" id="sim-tugas">
+    <div class="sim-head"><span class="sim-tag">Simulasi 6</span><h4>Eksak (numerik Biot-Savart) vs pendekatan dipol</h4><span class="lib">p5.js</span></div>
+    <div class="sim-body"><div class="stage"><div class="loading">memuat…</div><div class="hint">drag loop-2</div></div><div class="controls"></div></div>
+    <div class="readout"></div>
+    <details class="try"><summary>Coba ini</summary><ol>
+      <li>Peta warna = $B_z$ loop-1 di bidang. Di <b>dalam</b> loop-1 medannya keluar bidang (merah). Di <b>luar</b>, sebidang dengannya, medannya berlawanan (biru). Itulah tanda minus di jawaban (a).</li>
+      <li>Geser loop-2 menjauh. Rasio $M_\text{eksak}/M_\text{dipol}\to1$ ketika $r\gg a,b$, dan grafik log-log menunjukkan $|M|\propto r^{-3}$.</li>
+      <li>Dekatkan kedua loop ($r\sim a+b$). Pendekatan dipol mulai meleset beberapa puluh persen.</li>
+    </ol></details>
+  </div>
+
+  <div class="prose">
+    <h3>Penyelesaian bertahap</h3>
+    <p>Sumbu $z$ tegak lurus bidang, searah aturan tangan kanan arus. Loop-1 di asal, loop-2 di $\vec R=r\hat x$.</p>
+    <ol class="steps">
+      <li><b>Potensial vektor loop-1 (dari Biot-Savart).</b> $\vec A=\frac{\mu_0I_1}{4\pi}\oint\frac{d\vec\ell'}{|\vec R-\vec R'|}$. Ekspansi $\frac{1}{|\vec R-\vec R'|}\approx\frac1R+\frac{\vec R\cdot\vec R'}{R^3}$, dengan $\oint d\vec\ell'=0$.</li>
+      <li><b>Dalil Stokes</b> $\oint\phi\,d\vec\ell'=\int d\vec S'\times\nabla'\phi$ dengan $\phi=\vec R\cdot\vec R'$ memberi $\oint(\vec R\cdot\vec R')d\vec\ell'=\vec S\times\vec R$, $\vec S=\pi a^2\hat z$. Jadi $\vec A=\frac{\mu_0}{4\pi}\frac{\vec m_1\times\vec R}{R^3}$, dengan $\vec m_1=I_1\pi a^2\hat z$.</li>
+      <li><b>Medan dipol.</b> $\vec B=\nabla\times\vec A=\frac{\mu_0}{4\pi}\frac{3(\vec m\cdot\hat R)\hat R-\vec m}{R^3}$, memakai $\nabla\cdot(\vec R/R^3)=0$ dan $(\vec m\cdot\nabla)\frac{\vec R}{R^3}=\frac{\vec m}{R^3}-\frac{3\vec R(\vec m\cdot\vec R)}{R^5}$.</li>
+      <li><b>(a)</b> Di loop-2 berlaku $\vec m_1\cdot\hat x=0$, sehingga $\boxed{\vec B_1=-\dfrac{\mu_0I_1a^2}{4r^3}\hat z}$. Medan ini dianggap seragam di loop-2 karena $b\ll r$.</li>
+      <li><b>(b)</b> $\Phi_{21}=\int\vec B_1\cdot d\vec S_2=B_{1z}\pi b^2$, jadi $\boxed{\Phi_{21}=-\dfrac{\mu_0\pi I_1a^2b^2}{4r^3}}$.</li>
+      <li><b>(c)</b> $\vec\tau=\vec m_2\times\vec B_1=(I_2\pi b^2\hat z)\times(B_{1z}\hat z)$, jadi $\boxed{\vec\tau=0}$. Energinya $U=-\vec m_2\cdot\vec B_1=+\frac{\mu_0\pi I_1I_2a^2b^2}{4r^3}&gt;0$: $\vec m_2$ antiparalel $\vec B_1$, kesetimbangan tak stabil.</li>
+      <li><b>(d)</b> $M=\Phi_{21}/I_1$, jadi $\boxed{M=-\dfrac{\mu_0\pi a^2b^2}{4r^3}}$. Cek: $\Phi_{12}/I_2$ memberi hasil sama ($M_{12}=M_{21}$). Simulasi di atas memverifikasinya dengan rumus Neumann $M=\frac{\mu_0}{4\pi}\oint\oint\frac{d\vec\ell_1\cdot d\vec\ell_2}{|\vec r_1-\vec r_2|}$.</li>
+    </ol>
+  </div>
+</section>
+
+<footer class="prose">
+  Rumus fisika semua simulasi ada di <code>js/physics.js</code> dan diuji oleh <code>node js/physics.test.mjs</code>. Dibuat untuk belajar mandiri. Selalu cocokkan dengan slide dan catatan kuliah.
+</footer>
+</main>
+</div>
+</body>
+</html>
